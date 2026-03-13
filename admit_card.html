@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admit Card — Vivek University</title>
+  <link rel="stylesheet" href="Style.css">
+  <style>
+
+    /* ── Mode Selection ── */
+    .mode-wrapper {
+      max-width: 640px;
+      margin: 30px auto;
+      text-align: center;
+    }
+
+    .page-title {
+      color: #1c2e7a;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .page-subtitle {
+      color: #777;
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+
+    .mode-cards {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+
+    .mode-card {
+      flex: 1;
+      max-width: 240px;
+      border: 2px solid #e0e4f0;
+      border-radius: 12px;
+      padding: 28px 20px;
+      cursor: pointer;
+      transition: all 0.25s;
+      background: #fff;
+    }
+
+    .mode-card:hover {
+      border-color: #3a4fb0;
+      box-shadow: 0 6px 24px rgba(58,79,176,0.12);
+      transform: translateY(-2px);
+    }
+
+    .mode-card.active {
+      border-color: #1d2f6f;
+      background: linear-gradient(135deg, #f0f3ff, #e8ecff);
+      box-shadow: 0 6px 24px rgba(29,47,111,0.15);
+    }
+
+    .mode-icon { font-size: 38px; margin-bottom: 10px; }
+
+    .mode-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1d2f6f;
+      margin-bottom: 6px;
+    }
+
+    .mode-desc {
+      font-size: 11px;
+      color: #888;
+      line-height: 1.5;
+    }
+
+    /* ── Login Panels ── */
+    .login-panel {
+      display: none;
+      max-width: 440px;
+      margin: 0 auto;
+      background: #fff;
+      border: 1.5px solid #e0e4f0;
+      border-radius: 12px;
+      padding: 28px 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .login-panel.active { display: block; }
+
+    .login-panel h3 {
+      color: #1d2f6f;
+      font-size: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #eef0ff;
+    }
+
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .field-group input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #d9deea;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: 'Poppins', sans-serif;
+      background: #f9faff;
+      transition: all 0.2s;
+      box-sizing: border-box;
+    }
+
+    .field-group input:focus {
+      outline: none;
+      border-color: #3a4fb0;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(58,79,176,0.1);
+    }
+
+    .field-group input[type="password"] {
+      letter-spacing: 2px;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #1d2f6f, #3a4fb0);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      margin-top: 6px;
+      transition: all 0.2s;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(29,47,111,0.25);
+    }
+
+    /* ── Status Messages ── */
+    .status-msg {
+      margin-top: 14px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+      display: none;
+    }
+
+    .status-loading { background: #eef0ff; color: #3a4fb0; display: block; }
+    .status-error   { background: #fff0f0; color: #c0392b; display: block; }
+    .status-success { background: #f0fff8; color: #00804a; display: block; }
+
+    /* ── Search Panel (after login) ── */
+    .search-panel {
+      display: none;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .search-panel.active { display: block; }
+
+    .user-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #eef0ff;
+      border: 1px solid #c0c8f0;
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 12px;
+      color: #1d2f6f;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 10px;
+      background: #f4f6ff;
+      border: 2px solid #d0d8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      align-items: center;
+      transition: border-color 0.2s;
+    }
+
+    .search-row:focus-within {
+      border-color: #3a4fb0;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(58,79,176,0.1);
+    }
+
+    .search-row input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      font-family: 'Poppins', sans-serif;
+      color: #2c2c2c;
+      outline: none;
+    }
+
+    .search-row input::placeholder { color: #aaa; }
+
+    .search-btn {
+      padding: 9px 22px;
+      background: linear-gradient(135deg, #1d2f6f, #3a4fb0);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .search-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(29,47,111,0.25);
+    }
+
+    .logout-link {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 12px;
+      color: #888;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .logout-link:hover { color: #c0392b; }
+
+    /* ── Admit Card Preview ── */
+    #admitCardSection {
+      display: none;
+      margin-top: 30px;
+    }
+
+    .preview-label {
+      text-align: center;
+      color: #888;
+      font-size: 11px;
+      margin-bottom: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    .btn-download {
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #1d2f6f, #3a4fb0);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 4px 14px rgba(29,47,111,0.25);
+      transition: all 0.2s;
+    }
+
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(29,47,111,0.3);
+    }
+
+    .btn-secondary {
+      padding: 12px 24px;
+      background: #fff;
+      color: #3a4fb0;
+      border: 2px solid #3a4fb0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover { background: #f0f3ff; }
+
+    /* ── Admit Card Design ── */
+    #admitCardTemplate {
+      font-family: Arial, sans-serif;
+      font-size: 13px;
+      border: 3px solid #1d2f6f;
+      border-radius: 10px;
+      overflow: hidden;
+      max-width: 750px;
+      margin: 0 auto;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    .ac-header {
+      background: linear-gradient(135deg, #0e1c3f, #1d2f6f, #3a4fb0);
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .ac-header img.ac-logo {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      border: 2px solid #f4c542;
+      object-fit: contain;
+      background: #fff;
+    }
+
+    .ac-title-block { flex: 1; text-align: center; }
+    .ac-title-block .ac-univ  { color: #f4c542; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
+    .ac-title-block .ac-head  { color: #fff; font-size: 20px; font-weight: bold; margin: 4px 0; }
+    .ac-title-block .ac-sub   { color: #a0b4d0; font-size: 11px; letter-spacing: 1px; }
+
+    .ac-gold-bar { height: 4px; background: linear-gradient(90deg, #f4c542, #ffe082, #f4c542); }
+
+    .ac-meta {
+      background: #eef0fa;
+      padding: 8px 24px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      border-bottom: 1px solid #d0d4e8;
+    }
+
+    .ac-meta b { color: #1d2f6f; }
+    .ac-rollno { color: #c0392b; font-weight: bold; font-size: 15px; }
+
+    .ac-body { display: flex; padding: 20px 24px; gap: 0; }
+
+    .ac-info { flex: 1; border-collapse: collapse; font-size: 12.5px; }
+    .ac-info td { padding: 7px 6px; vertical-align: top; }
+    .ac-info tr:nth-child(even) { background: #f7f8fc; }
+    .ac-info .lbl { color: #555; width: 130px; font-weight: 500; }
+    .ac-info .val { color: #1d2f6f; font-weight: 600; }
+
+    .ac-photo-box {
+      width: 130px; margin-left: 20px;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+
+    .ac-photo-box img.ac-photo {
+      width: 110px; height: 130px;
+      object-fit: cover;
+      border: 2px solid #1d2f6f;
+      border-radius: 4px;
+    }
+
+    .ac-sign-area {
+      border-top: 1.5px solid #333;
+      width: 110px; text-align: center; padding-top: 5px;
+    }
+
+    .ac-sign-area img { height: 36px; width: 100px; object-fit: contain; }
+    .ac-sign-area small { display: block; font-size: 10px; color: #666; margin-top: 2px; }
+
+    .ac-exam-box {
+      margin: 0 24px 16px;
+      border: 2px solid #f4c542;
+      border-radius: 6px; overflow: hidden;
+    }
+
+    .ac-exam-box .ex-header {
+      background: #f4c542;
+      padding: 7px 14px;
+      font-weight: bold; font-size: 12px; color: #1d2f6f; letter-spacing: 1px;
+    }
+
+    .ac-exam-grid {
+      display: flex; padding: 12px 14px; background: #fffdf4;
+    }
+
+    .ac-exam-cell {
+      flex: 1; padding: 0 12px; border-right: 1px solid #e0d09a;
+    }
+
+    .ac-exam-cell:first-child { padding-left: 0; }
+    .ac-exam-cell:last-child  { border-right: none; }
+    .ac-exam-cell .el { font-size: 10px; color: #888; margin-bottom: 3px; }
+    .ac-exam-cell .ev { font-weight: bold; color: #1d2f6f; font-size: 13px; }
+
+    .ac-instructions {
+      margin: 0 24px 16px;
+      background: #f4f5f8; border-radius: 6px; padding: 12px 14px;
+    }
+
+    .ac-instructions .it { font-weight: bold; color: #1d2f6f; font-size: 12px; margin-bottom: 8px; }
+    .ac-instructions ol { margin: 0; padding-left: 18px; font-size: 11px; color: #444; line-height: 1.9; }
+
+    .ac-footer {
+      background: #1d2f6f; padding: 10px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .ac-footer span:first-child { color: #a0b4d0; font-size: 10px; }
+    .ac-footer span:last-child  { color: #f4c542; font-size: 10px; font-weight: bold; }
+
+    /* Admin badge indicator on card */
+    .admin-stamp {
+      display: none;
+      position: absolute;
+      top: 12px; right: 12px;
+      background: #c0392b;
+      color: #fff;
+      font-size: 9px;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ── Page Header ── -->
+  <header class="form-header">
+    <img src="Form Logo.png" alt="University Logo" class="university-logo">
+    <div class="university-info">
+      <h1>Vivek University</h1>
+      <p>Department of Nursing Education</p>
+    </div>
+  </header>
+
+  <hr>
+
+  <!-- ══════════════════════════════════════════
+       STEP 1 — Choose Mode
+  ══════════════════════════════════════════ -->
+  <div class="mode-wrapper" id="modeSection">
+
+    <div class="page-title">🎫 Admit Card Download</div>
+    <div class="page-subtitle">Who are you? Select your role to continue.</div>
+
+    <div class="mode-cards">
+
+      <div class="mode-card" id="cardAdmin" onclick="selectMode('admin')">
+        <div class="mode-icon">🔐</div>
+        <div class="mode-label">Admin</div>
+        <div class="mode-desc">University staff<br>Search any application<br>No verification needed</div>
+      </div>
+
+      <div class="mode-card" id="cardStudent" onclick="selectMode('student')">
+        <div class="mode-icon">🎓</div>
+        <div class="mode-label">Student</div>
+        <div class="mode-desc">Verify with your registered<br>mobile OTP + Application No.<br>to download your admit card</div>
+      </div>
+
+    </div>
+
+    <!-- ── Admin Login Panel ── -->
+    <div class="login-panel" id="adminPanel">
+      <h3>🔐 Admin Login</h3>
+      <div class="field-group">
+        <label>Admin Username</label>
+        <input type="text" id="adminUser" placeholder="Enter admin username" onkeydown="if(event.key==='Enter') adminLogin()">
+      </div>
+      <div class="field-group">
+        <label>Admin Password</label>
+        <input type="password" id="adminPass" placeholder="Enter password" onkeydown="if(event.key==='Enter') adminLogin()">
+      </div>
+      <button class="login-btn" onclick="adminLogin()">Login as Admin →</button>
+      <div id="adminStatus" class="status-msg"></div>
+    </div>
+
+    <!-- ── Student Verification Panel ── -->
+    <div class="login-panel" id="studentPanel">
+      <h3>🎓 Student Verification</h3>
+
+      <!-- Step A: Enter App ID + Mobile -->
+      <div id="studentStep1">
+        <div class="field-group">
+          <label>Application Number <span style="color:red;">*</span></label>
+          <input type="text" id="stuAppId" placeholder="e.g. GNM12345">
+        </div>
+        <div class="field-group">
+          <label>Registered Mobile Number <span style="color:red;">*</span></label>
+          <input type="tel" id="stuMobile" placeholder="10-digit mobile number" maxlength="10">
+        </div>
+        <button class="login-btn" onclick="studentVerifyStep1()">Send OTP →</button>
+        <div id="studentStatus1" class="status-msg"></div>
+      </div>
+
+      <!-- Step B: Enter OTP -->
+      <div id="studentStep2" style="display:none;">
+        <div style="text-align:center; margin-bottom:16px; padding:12px; background:#eef0ff; border-radius:8px;">
+          <div style="font-size:12px; color:#555;">OTP sent to your registered mobile</div>
+          <div style="font-size:18px; font-weight:700; color:#1d2f6f; margin-top:4px;" id="maskedMobile"></div>
+        </div>
+        <div class="field-group">
+          <label>Enter 6-digit OTP <span style="color:red;">*</span></label>
+          <input type="text" id="otpInput" placeholder="Enter OTP" maxlength="6"
+            style="font-size:22px; letter-spacing:8px; text-align:center;"
+            onkeydown="if(event.key==='Enter') studentVerifyOTP()">
+        </div>
+        <button class="login-btn" onclick="studentVerifyOTP()">Verify & View Admit Card →</button>
+        <div style="text-align:center; margin-top:10px;">
+          <span style="font-size:12px; color:#888;">Didn't receive? </span>
+          <span style="font-size:12px; color:#3a4fb0; cursor:pointer; font-weight:600;" onclick="studentVerifyStep1()">Resend OTP</span>
+        </div>
+        <div id="studentStatus2" class="status-msg"></div>
+      </div>
+
+    </div>
+
+  </div><!-- /mode-wrapper -->
+
+
+  <!-- ══════════════════════════════════════════
+       STEP 2 — Search (admin only, after login)
+  ══════════════════════════════════════════ -->
+  <div class="search-panel" id="adminSearchPanel">
+
+    <div style="text-align:center; margin-bottom:20px;">
+      <div class="user-badge">🔐 Admin Mode &nbsp;·&nbsp; <span id="adminNameBadge"></span></div>
+    </div>
+
+    <div class="search-row">
+      <span style="color:#aaa; font-size:18px;">🔍</span>
+      <input type="text" id="adminSearchInput"
+        placeholder="Enter Application Number (e.g. GNM12345)"
+        onkeydown="if(event.key==='Enter') adminSearch()">
+      <button class="search-btn" onclick="adminSearch()">Search</button>
+    </div>
+
+    <div id="adminSearchStatus" class="status-msg"></div>
+    <div style="text-align:center;"><span class="logout-link" onclick="logout()">← Logout</span></div>
+
+  </div>
+
+
+  <!-- ══════════════════════════════════════════
+       STEP 3 — Admit Card (shown after success)
+  ══════════════════════════════════════════ -->
+  <div id="admitCardSection">
+
+    <div class="preview-label">📋 Admit Card Preview</div>
+
+    <!-- ── Admit Card ── -->
+    <div id="admitCardTemplate">
+
+      <div class="ac-header">
+        <img src="Form Logo.png" alt="Logo" class="ac-logo">
+        <div class="ac-title-block">
+          <div class="ac-univ">Vivek University</div>
+          <div class="ac-head">ADMIT CARD</div>
+          <div class="ac-sub">GNM Nursing Programme — Entrance Examination</div>
+        </div>
+        <div id="ac_qrcode" style="width:72px; height:72px; background:#fff; padding:4px; border-radius:4px;"></div>
+      </div>
+
+      <div class="ac-gold-bar"></div>
+
+      <div class="ac-meta">
+        <span><b>Roll No / App No: </b><span id="ac_appId" class="ac-rollno"></span></span>
+        <span><b>Issue Date: </b><span id="ac_issueDate"></span></span>
+        <span><b>Payment ID: </b><span id="ac_payId"></span></span>
+      </div>
+
+      <div class="ac-body">
+        <table class="ac-info">
+          <tr><td class="lbl">Candidate Name</td><td class="val" id="ac_fullName"></td></tr>
+          <tr><td class="lbl">Father's Name</td> <td id="ac_fatherName"></td></tr>
+          <tr><td class="lbl">Mother's Name</td> <td id="ac_motherName"></td></tr>
+          <tr><td class="lbl">Date of Birth</td> <td id="ac_dob"></td></tr>
+          <tr><td class="lbl">Gender</td>         <td id="ac_gender"></td></tr>
+          <tr><td class="lbl">Category</td>       <td id="ac_category"></td></tr>
+          <tr><td class="lbl">Mobile</td>         <td id="ac_mobile"></td></tr>
+          <tr><td class="lbl">Email</td>          <td id="ac_email"></td></tr>
+          <tr><td class="lbl">PCB Percentage</td> <td style="color:#1d5e8a; font-weight:bold;" id="ac_pcbPercent"></td></tr>
+        </table>
+
+        <div class="ac-photo-box">
+          <img id="ac_photo" class="ac-photo" src="" alt="Photo">
+          <div class="ac-sign-area">
+            <img id="ac_sign" src="" alt="Signature">
+            <small>Candidate's Signature</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="ac-exam-box">
+        <div class="ex-header">📋 EXAMINATION DETAILS</div>
+        <div class="ac-exam-grid">
+          <div class="ac-exam-cell">
+            <div class="el">Exam Name</div>
+            <div class="ev">GNM Nursing Entrance</div>
+          </div>
+          <div class="ac-exam-cell">
+            <div class="el">Exam Date</div>
+            <div class="ev" id="ac_examDate">To be announced</div>
+          </div>
+          <div class="ac-exam-cell">
+            <div class="el">Exam Time</div>
+            <div class="ev" id="ac_examTime">10:00 AM – 12:00 PM</div>
+          </div>
+          <div class="ac-exam-cell">
+            <div class="el">Exam Centre</div>
+            <div class="ev" id="ac_examCentre">Vivek University Campus</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ac-instructions">
+        <div class="it">📌 Important Instructions</div>
+        <ol>
+          <li>Carry this admit card and a valid photo ID proof to the examination hall.</li>
+          <li>Report at the exam centre at least 30 minutes before the exam time.</li>
+          <li>Mobile phones and electronic devices are strictly prohibited inside.</li>
+          <li>This admit card is valid only along with the candidate's original photo ID.</li>
+          <li>For queries contact: admissions@vivekuni.edu | +91-XXXXXXXXXX</li>
+        </ol>
+      </div>
+
+      <div class="ac-footer">
+        <span>Computer-generated document. No physical signature required.</span>
+        <span>Vivek University — Department of Nursing Education</span>
+      </div>
+
+    </div><!-- /admitCardTemplate -->
+
+    <div class="action-btns">
+      <button class="btn-download" onclick="downloadAdmitCard()">⬇ Download Admit Card (PDF)</button>
+      <button class="btn-secondary" onclick="searchAnother()">🔍 Search Another</button>
+    </div>
+
+  </div><!-- /admitCardSection -->
+
+</div><!-- /container -->
+
+
+<script>
+
+// ══════════════════════════════════════════════════════
+// CONFIG  — 🔴 Replace these before going live
+// ══════════════════════════════════════════════════════
+var APPS_SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_URL"; // Same URL as form
+
+// Admin credentials (change these!)
+var ADMIN_CREDENTIALS = {
+  "admin":    "vivek@2024",     // username: password
+  "principal":"nursing@admin"   // add more admins here
+};
+
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+var currentMode    = null;   // 'admin' | 'student'
+var generatedOTP   = null;
+var verifiedAppId  = null;
+var verifiedMobile = null;
+
+// ══════════════════════════════════════════════════════
+// STEP 1 — SELECT MODE
+// ══════════════════════════════════════════════════════
+function selectMode(mode) {
+  currentMode = mode;
+  document.getElementById("cardAdmin").classList.toggle("active",   mode === "admin");
+  document.getElementById("cardStudent").classList.toggle("active", mode === "student");
+  document.getElementById("adminPanel").classList.toggle("active",   mode === "admin");
+  document.getElementById("studentPanel").classList.toggle("active", mode === "student");
+}
+
+// ══════════════════════════════════════════════════════
+// ADMIN LOGIN
+// ══════════════════════════════════════════════════════
+function adminLogin() {
+  var user = document.getElementById("adminUser").value.trim();
+  var pass = document.getElementById("adminPass").value.trim();
+  var stat = document.getElementById("adminStatus");
+
+  if (!user || !pass) {
+    showStatus(stat, "error", "⚠️ Please enter username and password.");
+    return;
+  }
+
+  if (ADMIN_CREDENTIALS[user] && ADMIN_CREDENTIALS[user] === pass) {
+    // Login success
+    showStatus(stat, "success", "✅ Login successful!");
+    setTimeout(function() {
+      document.getElementById("modeSection").style.display = "none";
+      document.getElementById("adminSearchPanel").style.display = "block";
+      document.getElementById("adminNameBadge").textContent = user;
+    }, 600);
+  } else {
+    showStatus(stat, "error", "❌ Invalid username or password.");
+    document.getElementById("adminPass").value = "";
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// ADMIN SEARCH
+// ══════════════════════════════════════════════════════
+function adminSearch() {
+  var appId = document.getElementById("adminSearchInput").value.trim().toUpperCase();
+  var stat  = document.getElementById("adminSearchStatus");
+
+  if (!appId) {
+    showStatus(stat, "error", "⚠️ Please enter an Application Number.");
+    return;
+  }
+
+  showStatus(stat, "loading", "⏳ Searching for " + appId + " ...");
+  document.getElementById("admitCardSection").style.display = "none";
+
+  fetchCandidate(appId, function(data) {
+    if (data.status === "found") {
+      showStatus(stat, "success", "✅ Found! Generating admit card...");
+      setTimeout(function() {
+        fillAdmitCard(data);
+        stat.style.display = "none";
+      }, 500);
+    } else {
+      showStatus(stat, "error", "❌ Application Number not found.");
+    }
+  }, function() {
+    showStatus(stat, "error", "❌ Connection error. Please try again.");
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// STUDENT — STEP 1: Verify App ID + Mobile → Send OTP
+// ══════════════════════════════════════════════════════
+function studentVerifyStep1() {
+  var appId  = document.getElementById("stuAppId").value.trim().toUpperCase();
+  var mobile = document.getElementById("stuMobile").value.trim();
+  var stat   = document.getElementById("studentStatus1");
+
+  if (!appId || !mobile) {
+    showStatus(stat, "error", "⚠️ Please enter Application Number and Mobile.");
+    return;
+  }
+
+  if (!/^\d{10}$/.test(mobile)) {
+    showStatus(stat, "error", "⚠️ Please enter a valid 10-digit mobile number.");
+    return;
+  }
+
+  showStatus(stat, "loading", "⏳ Verifying your details...");
+
+  // Check if appId + mobile match in sheet
+  fetchCandidate(appId, function(data) {
+    if (data.status === "found") {
+      // Verify mobile matches
+      var sheetMobile = String(data.mobile || "").replace(/\D/g, "").slice(-10);
+      var enteredMobile = mobile.replace(/\D/g, "").slice(-10);
+
+      if (sheetMobile === enteredMobile) {
+        // Match — generate and "send" OTP
+        generatedOTP   = Math.floor(100000 + Math.random() * 900000).toString();
+        verifiedAppId  = appId;
+        verifiedMobile = mobile;
+
+        // In production: call SMS API here
+        // For demo: show OTP in console (remove in production!)
+        console.log("OTP for testing: " + generatedOTP);
+
+        // Switch to OTP step
+        showStatus(stat, "success", "✅ Details verified! OTP sent.");
+        setTimeout(function() {
+          document.getElementById("studentStep1").style.display = "none";
+          document.getElementById("studentStep2").style.display = "block";
+          document.getElementById("maskedMobile").textContent =
+            mobile.slice(0,2) + "XXXXXX" + mobile.slice(-2);
+          stat.style.display = "none";
+        }, 600);
+
+      } else {
+        showStatus(stat, "error", "❌ Mobile number does not match our records.");
+      }
+    } else {
+      showStatus(stat, "error", "❌ Application Number not found. Please check.");
+    }
+  }, function() {
+    showStatus(stat, "error", "❌ Connection error. Please try again.");
+  });
+}
+
+// ══════════════════════════════════════════════════════
+// STUDENT — STEP 2: Verify OTP
+// ══════════════════════════════════════════════════════
+function studentVerifyOTP() {
+  var enteredOTP = document.getElementById("otpInput").value.trim();
+  var stat       = document.getElementById("studentStatus2");
+
+  if (!enteredOTP) {
+    showStatus(stat, "error", "⚠️ Please enter the OTP.");
+    return;
+  }
+
+  if (enteredOTP === generatedOTP) {
+    showStatus(stat, "success", "✅ OTP verified! Loading your admit card...");
+
+    // Fetch and show admit card
+    fetchCandidate(verifiedAppId, function(data) {
+      if (data.status === "found") {
+        setTimeout(function() {
+          document.getElementById("modeSection").style.display = "none";
+          fillAdmitCard(data);
+          stat.style.display = "none";
+        }, 500);
+      }
+    }, function() {
+      showStatus(stat, "error", "❌ Error loading admit card. Please try again.");
+    });
+
+  } else {
+    showStatus(stat, "error", "❌ Incorrect OTP. Please try again.");
+    document.getElementById("otpInput").value = "";
+  }
+}
+
+// ══════════════════════════════════════════════════════
+// FETCH CANDIDATE DATA FROM APPS SCRIPT
+// ══════════════════════════════════════════════════════
+function fetchCandidate(appId, onSuccess, onError) {
+  fetch(APPS_SCRIPT_URL + "?action=search&appId=" + encodeURIComponent(appId))
+    .then(function(res) { return res.json(); })
+    .then(onSuccess)
+    .catch(onError);
+}
+
+// ══════════════════════════════════════════════════════
+// FILL ADMIT CARD WITH DATA
+// ══════════════════════════════════════════════════════
+function fillAdmitCard(data) {
+  document.getElementById("ac_appId").textContent      = data.applicationId || "";
+  document.getElementById("ac_issueDate").textContent  = new Date().toLocaleDateString("en-IN");
+  document.getElementById("ac_payId").textContent      = data.paymentId     || "";
+  document.getElementById("ac_fullName").textContent   = data.fullName      || "";
+  document.getElementById("ac_fatherName").textContent = data.fatherName    || "";
+  document.getElementById("ac_motherName").textContent = data.motherName    || "";
+  document.getElementById("ac_dob").textContent        = data.dob           || "";
+  document.getElementById("ac_gender").textContent     = data.gender        || "";
+  document.getElementById("ac_category").textContent   = data.category      || "";
+  document.getElementById("ac_mobile").textContent     = data.mobile        || "";
+  document.getElementById("ac_email").textContent      = data.email         || "";
+  document.getElementById("ac_pcbPercent").textContent = (data.pcbPercent || "") + "%";
+
+  // QR Code
+  document.getElementById("ac_qrcode").innerHTML = "";
+  new QRCode(document.getElementById("ac_qrcode"), {
+    text:   "ADMIT:" + (data.applicationId||"") + "|" + (data.fullName||"") + "|Vivek University GNM",
+    width:  72, height: 72
+  });
+
+  // Show admit card section
+  document.getElementById("admitCardSection").style.display = "block";
+  document.getElementById("admitCardSection").scrollIntoView({ behavior: "smooth" });
+}
+
+// ══════════════════════════════════════════════════════
+// DOWNLOAD ADMIT CARD AS PDF
+// ══════════════════════════════════════════════════════
+function downloadAdmitCard() {
+  var appId    = document.getElementById("ac_appId").textContent;
+  var template = document.getElementById("admitCardTemplate");
+
+  html2pdf().set({
+    margin:      [8, 8, 8, 8],
+    filename:    "GNM_AdmitCard_" + appId + ".pdf",
+    image:       { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, logging: false },
+    jsPDF:       { unit: "mm", format: "a4", orientation: "portrait" }
+  }).from(template).save();
+}
+
+// ══════════════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════════════
+function showStatus(el, type, msg) {
+  el.className  = "status-msg status-" + type;
+  el.textContent = msg;
+  el.style.display = "block";
+}
+
+function logout() {
+  currentMode = null;
+  document.getElementById("adminUser").value  = "";
+  document.getElementById("adminPass").value  = "";
+  document.getElementById("adminSearchInput").value = "";
+  document.getElementById("adminSearchPanel").style.display = "none";
+  document.getElementById("admitCardSection").style.display = "none";
+  document.getElementById("modeSection").style.display      = "block";
+  document.getElementById("adminPanel").classList.remove("active");
+  document.getElementById("studentPanel").classList.remove("active");
+  document.getElementById("cardAdmin").classList.remove("active");
+  document.getElementById("cardStudent").classList.remove("active");
+}
+
+function searchAnother() {
+  document.getElementById("admitCardSection").style.display = "none";
+  if (currentMode === "admin") {
+    document.getElementById("adminSearchInput").value = "";
+    document.getElementById("adminSearchPanel").style.display = "block";
+    document.getElementById("adminSearchPanel").scrollIntoView({ behavior: "smooth" });
+  } else {
+    logout();
+  }
+}
+
+</script>
+</body>
+</html>

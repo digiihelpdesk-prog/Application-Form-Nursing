@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!-- QR Code library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- PDF generator library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GNM Nursing Application</title>
+<link rel="stylesheet" href="Style2.css">
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="form-header">
+<img src="logo.png" alt="University Logo" class="university-logo">
+
+<div class="university-info">
+<h1>Vivek University</h1>
+</div>
+</header>
+
+<div id="applicationForm">
+  <!-- Header with photo + QR -->
+  <div class="application-header">
+
+    <div class="header-left">
+      <img id="previewPhoto" width="120">
+    </div>
+
+    <div class="header-right">
+      <div id="qrcode"></div>
+    </div>
+
+  </div>
+</div>
+<hr>
+
+<h2>Application Form B.Sc Nursing</h2>
+
+<form id="nursingForm" onsubmit="return handleSubmit(event)">
+
+<p style="color:red; font-size:14px;">
+* Indicates Mandatory Fields
+</p>
+
+<input type="hidden" name="applicationId">
+<input type="hidden" name="applicationDate">
+<input type="hidden" name="transactionId">
+<input type="hidden" name="transactionDate">
+
+<div class="section-title">Personal Details</div>
+
+<div class="grid">
+
+<div class="form-group">
+<label>Full Name <span style="color:red;">*</span></label>
+<input type="text" name="fullName" required>
+</div>
+
+<div class="form-group">
+<label>Father's Name <span style="color:red;">*</span></label>
+<input type="text" name="fatherName">
+</div>
+
+<div class="form-group">
+<label>Mother's Name <span style="color:red;">*</span></label>
+<input type="text" name="motherName">
+</div>
+
+<div class="form-group">
+    
+<label>Gender <span style="color:red;">*</span></label>
+<select name = "gender">
+<option value="">Select</option>
+<option>Male</option>
+<option>Female</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Date of Birth <span style="color:red;">*</span></label>
+<input type="date" name="dob" id="dob" onchange="calculateAge()" oninput="calculateAge()">
+</div>
+
+<div class="form-group">
+<label>Age <span style="color:red;">*</span></label>
+<input type="text" name="age" id="age" readonly>
+</div>
+
+<div class="form-group">
+<label>Mobile Number <span style="color:red;">*</span></label>
+<input type="tel" name="mobile">
+</div>
+
+<div class="form-group">
+<label>Email Address <span style="color:red;">*</span></label>
+<input type="email" name="email">
+</div>
+
+<div class="form-group">
+<label>Aadhar Number <span style="color:red;">*</span></label>
+<input type="text" name="aadhar" maxlength="12">
+</div>
+
+<div class="form-group">
+<label>Category <span style="color:red;">*</span></label>
+<select name="category">
+<option value="">Select</option>
+<option>General</option>
+<option>OBC</option>
+<option>SC</option>
+<option>ST</option>
+</select>
+</div>
+
+</div>
+
+
+<div class="section-title">Permanent Address</div>
+
+<div class="grid">
+
+<div class="form-group">
+<label>House / Village <span style="color:red;">*</span></label>
+<input type="text" name="phouse" id="phouse">
+</div>
+
+<div class="form-group">
+<label>Area / Post Office <span style="color:red;">*</span></label>
+<input type="text" name="parea" id="parea">
+</div>
+
+<div class="form-group">
+<label>District<span style="color:red;">*</span></label>
+<input type="text" name="pdistrict" id="pdistrict">
+</div>
+
+<div class="form-group">
+<label>City <span style="color:red;">*</span></label>
+<input type="text"  name="pcity" id="pcity">
+</div>
+
+<div class="form-group">
+<label>State <span style="color:red;">*</span></label>
+<input type="text" name="pstate" id="pstate">
+</div>
+
+<div class="form-group">
+<label>Pincode <span style="color:red;">*</span></label>
+<input type="text" name="ppin" id="ppin">
+</div>
+
+</div>
+
+
+<div class="section-title address-header">
+
+<span>Correspondence Address</span>
+
+<div class="checkbox-row">
+<input type="checkbox" id="copyCheck" onclick="syncAddress()">
+<label for="copyCheck">Same as Permanent Address</label>
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="form-group">
+<label>House / Village <span style="color:red;">*</span></label>
+<input type="text" name="chouse" id="chouse">
+</div>
+
+<div class="form-group">
+<label>Area / Post Office <span style="color:red;">*</span></label>
+<input type="text" name="carea" id="carea">
+</div>
+
+<div class="form-group">
+<label>District <span style="color:red;">*</span></label>
+<input type="text" name="cdistrict" id="cdistrict">
+</div>
+
+<div class="form-group">
+<label>City <span style="color:red;">*</span></label>
+<input type="text" name="ccity" id="ccity">
+</div>
+
+<div class="form-group">
+<label>State <span style="color:red;">*</span></label>
+<input type="text" name="cstate" id="cstate">
+</div>
+
+<div class="form-group">
+<label>Pincode <span style="color:red;">*</span></label>
+<input type="text" name="cpin" id="cpin">
+</div>
+
+</div>
+
+
+<div class="section-title">Academic Details (10th)</div>
+
+<div class="grid">
+
+<div class="form-group">
+<label>Examination Passed <span style="color:red;">*</span></label>
+<input type="text" name="exam10">
+</div>
+
+<div class="form-group">
+<label>Board / University <span style="color:red;">*</span></label>
+<input type="text" name="board10">
+</div>
+
+<div class="form-group">
+<label>Institute / School <span style="color:red;">*</span></label>
+<input type="text" name="school10">
+</div>
+
+<div class="form-group">
+<label>Year of Passing <span style="color:red;">*</span></label>
+<input type="number" name="year10">
+</div>
+
+<div class="form-group">
+<label>Maximum Marks <span style="color:red;">*</span></label>
+<input type="number" name="maxMarks10" id="maxMarks10" oninput="calc10()">
+</div>
+
+<div class="form-group">
+<label>Obtained Marks <span style="color:red;">*</span></label>
+<input type="number" name="obtMarks10" id="obtMarks10" oninput="calc10()">
+</div>
+
+<div class="form-group">
+<label>Percentage <span style="color:red;">*</span></label>
+<input type="text" name="percent10" id="per10" readonly>   
+</div>
+
+</div>
+
+
+<div class="section-title">Academic Details (12th)</div>
+
+<div class="grid">
+
+<div class="form-group">
+<label>Examination Passed <span style="color:red;">*</span></label>
+<input type="text" name="exam12">
+</div>
+
+<div class="form-group">
+<label>Board / University <span style="color:red;">*</span></label>
+<input type="text" name="board12">
+</div>
+
+<div class="form-group">
+<label>Institute / College <span style="color:red;">*</span></label>
+<input type="text" name="college12">
+</div>
+
+<div class="form-group">
+<label>Year of Passing <span style="color:red;">*</span></label>
+<input type="number" name="year12">
+</div>
+
+<div class="form-group">
+<label>Physics Mark <span style="color:red;">*</span></label>
+<input type="number" id="physics" oninput="calculatePCB()" name="phymarks">
+</div>
+
+<div class="form-group">
+<label>Chemistry Mark <span style="color:red;">*</span></label>
+<input type="number" id="chemistry" oninput="calculatePCB()" name="chemarks">
+</div>
+
+<div class="form-group">
+<label>Biology Marks <span style="color:red;">*</span></label>
+<input type="number" id="biology" oninput="calculatePCB()" name="biomarks">
+</div>
+
+<div class="form-group">
+<label>English Mark <span style="color:red;">*</span></label>
+<input type="number" id="english" name="engmarks">
+</div>
+
+
+
+<div class="form-group">
+<label>Total Marks <span style="color:red;">*</span></label>
+<input type="number" id="totalPCB" name="totalmarks">
+</div>
+
+<div class="form-group">
+<label>Obtained Mark <span style="color:red;">*</span></label>
+<input type="number" name="obtmarks">
+</div>
+
+<div class="form-group">
+<label>Subject <span style="color:red;">*</span></label>
+<select name="subject12">
+<option value="">Select</option>
+<option>PCB</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Percentage (PCB) <span style="color:red;">*</span></label>
+<input type="text" id="percentage" readonly>
+</div>
+
+</div>
+
+
+<div class="section-title">Upload Documents</div>
+
+<div class="grid">
+
+<div class="form-group">
+<label>10th Marksheet <span style="color:red;">*</span></label>
+<input type="file" id="marksheet10" name="10thMarksheet" accept="image/*">
+<p class="upload-note">Note: Documents must be less than 50 KB.</p>
+</div>
+
+<div class="form-group">
+<label>12th Marksheet <span style="color:red;">*</span></label>
+<input type="file" id="marksheet12"  name="12thMarksheet" accept="image/*">
+<p class="upload-note">Note: Documents must be less than 50 KB.</p>
+</div>
+
+<div class="form-group">
+<label>Aadhar Card <span style="color:red;">*</span></label>
+<input type="file" id="aadharUpload"  name="AadharCard" accept="image/*">
+<p class="upload-note">Note: Documents must be less than 50 KB.</p>
+</div>
+
+<div class="form-group">
+<label>Upload Photo <span style="color:red;">*</span></label>
+<input type="file" id="photoUpload" name="photo" accept="image/*">
+<p class="upload-note">Note: Photo must be less than 50 KB.</p>
+</div>
+
+<div class="form-group">
+<label>Upload Signature <span style="color:red;">*</span></label>
+<input type="file" id="signatureUpload" name="Signature" accept="image/*">
+<p class="upload-note">Note: Signature must be less than 20 KB.</p>
+</div>
+
+</div>
+
+
+</div>
+
+<div class="button-center">
+<button type="submit" class="submit-btn">Submit Application</button>
+</div>
+
+<div id="downloadSection" style="display:none; text-align:center; margin-top:20px;">
+<button type="button" onclick="downloadForm()" class="submit-btn">
+Download Application Form
+</button>
+</div>
+
+</form>
+
+<!-- HIDDEN PDF TEMPLATE - only used for download after payment -->
+<div id="pdfDownloadTemplate" style="display:none;">
+  <div style="padding:20px; font-family:Arial; font-size:13px;">
+    
+    <!-- Header -->
+    <div style="display:flex; align-items:center; gap:15px; border-bottom:2px solid #2c3e7a; padding-bottom:10px;">
+      <img src="your-logo-path.png" style="width:60px; height:60px;">
+      <div style="flex:1; text-align:center;">
+        <h2 style="color:#2c3e7a; margin:0;">Vivek University</h2>
+        <p style="margin:2px 0;">Department of Nursing Education</p>
+        <h3 style="color:#2c3e7a; margin:4px 0;">GNM Nursing Application Form</h3>
+      </div>
+      <div id="pdf_qrcode" style="width:80px; height:80px;"></div>
+    </div>
+
+    <!-- App Meta -->
+    <div style="display:flex; gap:30px; background:#eef0fa; padding:6px 10px; margin:10px 0; font-size:12px;">
+      <span><b>Application No:</b> <span id="pdf_appId"></span></span>
+      <span><b>Date:</b> <span id="pdf_appDate"></span></span>
+      <span><b>Payment ID:</b> <span id="pdf_payId"></span></span>
+    </div>
+
+    <!-- Personal + Photo row -->
+    <div style="display:flex; gap:10px;">
+      <table style="flex:1; border-collapse:collapse; font-size:12px;">
+        <tr style="background:#2c3e7a; color:white;">
+          <td colspan="4" style="padding:5px 10px; font-weight:bold;">Personal Details</td>
+        </tr>
+        <tr>
+          <td class="lbl">Full Name</td><td id="pdf_fullName" class="val"></td>
+          <td class="lbl">Father's Name</td><td id="pdf_fatherName" class="val"></td>
+        </tr>
+        <tr>
+          <td class="lbl">Mother's Name</td><td id="pdf_motherName" class="val"></td>
+          <td class="lbl">Gender</td><td id="pdf_gender" class="val"></td>
+        </tr>
+        <tr>
+          <td class="lbl">Date of Birth</td><td id="pdf_dob" class="val"></td>
+          <td class="lbl">Age</td><td id="pdf_age" class="val"></td>
+        </tr>
+        <tr>
+          <td class="lbl">Mobile</td><td id="pdf_mobile" class="val"></td>
+          <td class="lbl">Email</td><td id="pdf_email" class="val"></td>
+        </tr>
+        <tr>
+          <td class="lbl">Aadhar No.</td><td id="pdf_aadhar" class="val"></td>
+          <td class="lbl">Category</td><td id="pdf_category" class="val"></td>
+        </tr>
+      </table>
+
+      <!-- Photo + Signature -->
+      <div style="width:110px; text-align:center; border:1px solid #ccc; padding:6px; border-radius:4px;">
+        <img id="pdf_photo" style="width:100px; height:110px; object-fit:cover; border:1px solid #aaa;"><br>
+        <small>Photo</small>
+        <img id="pdf_sign" style="width:100px; height:40px; object-fit:contain; margin-top:8px; border-top:1px solid #ccc;"><br>
+        <small>Signature</small>
+      </div>
+    </div>
+
+    <!-- Permanent Address -->
+    <table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:8px;">
+      <tr style="background:#2c3e7a; color:white;">
+        <td colspan="4" style="padding:5px 10px; font-weight:bold;">Permanent Address</td>
+      </tr>
+      <tr>
+        <td class="lbl">House/Village</td><td id="pdf_phouse" class="val"></td>
+        <td class="lbl">Area/PO</td><td id="pdf_parea" class="val"></td>
+      </tr>
+      <tr>
+        <td class="lbl">District</td><td id="pdf_pdistrict" class="val"></td>
+        <td class="lbl">City</td><td id="pdf_pcity" class="val"></td>
+      </tr>
+      <tr>
+        <td class="lbl">State</td><td id="pdf_pstate" class="val"></td>
+        <td class="lbl">Pincode</td><td id="pdf_ppin" class="val"></td>
+      </tr>
+    </table>
+
+    <!-- Correspondence Address -->
+    <table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:8px;">
+      <tr style="background:#2c3e7a; color:white;">
+        <td colspan="4" style="padding:5px 10px; font-weight:bold;">Correspondence Address</td>
+      </tr>
+      <tr>
+        <td class="lbl">House/Village</td><td id="pdf_chouse" class="val"></td>
+        <td class="lbl">Area/PO</td><td id="pdf_carea" class="val"></td>
+      </tr>
+      <tr>
+        <td class="lbl">District</td><td id="pdf_cdistrict" class="val"></td>
+        <td class="lbl">City</td><td id="pdf_ccity" class="val"></td>
+      </tr>
+      <tr>
+        <td class="lbl">State</td><td id="pdf_cstate" class="val"></td>
+        <td class="lbl">Pincode</td><td id="pdf_cpin" class="val"></td>
+      </tr>
+    </table>
+
+    <!-- 10th Details -->
+    <table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:8px;">
+      <tr style="background:#2c3e7a; color:white;">
+        <td colspan="4" style="padding:5px 10px; font-weight:bold;">Academic Details — 10th</td>
+      </tr>
+      <tr>
+        <td class="lbl">Examination</td><td id="pdf_exam10" class="val"></td>
+        <td class="lbl">Board/University</td><td id="pdf_board10" class="val"></td>
+      </tr>
+      <tr>
+        <td class="lbl">School</td><td id="pdf_school10" class="val"></td>
+        <td class="lbl">Year of Passing</td><td id="pdf_year10" class="val"></td>
+      </tr>
+      <tr>
+        <td class="lbl">Max Marks</td><td id="pdf_maxMarks10" class="val"></td>
+        <td class="lbl">Obtained Marks</td><td id="pdf_obtMarks10" class="val"></td>
+      </tr>
+      <tr>
+        <td class="lbl">Percentage</td><td id="pdf_percent10" class="val"></td>
+        <td></td><td></td>
+      </tr>
+    </table>
+
+    <!-- 12th Details -->
+    <table style="width:100%; border-collapse:collapse; font-size:12px; margin-top:8px;">
+      <tr style="background:#2c3e7a; color:white;">
+        <td colspan="4" style="padding:5px 10px; font-weight:bold;">Academic Details — 12th</td>
+      </tr>
+      <tr>
+        <td class="lbl">Examination</td><td id="pdf_exam12" class="val"></td>
+        <td class="lbl">Board/University</td><td id="pdf_board12" class="val"></td>
+      </tr>
+      <tr>
+        <td class="lbl">College</td><td id="pdf_college12" class="val"></td>
+        <td class="lbl">Year of Passing</td><td id="pdf_year12" class="val"></td>
+      </tr>
+      <tr>
+        <td class="lbl">Physics</td><td id="pdf_physics" class="val"></td>
+        <td class="lbl">Chemistry</td><td id="pdf_chemistry" class="val"></td>
+      </tr>
+      <tr>
+        <td class="lbl">Biology</td><td id="pdf_biology" class="val"></td>
+        <td class="lbl">English</td><td id="pdf_english" class="val"></td>
+      </tr>
+      <tr>
+        <td class="lbl">PCB %</td><td id="pdf_pcbPercent" class="val"></td>
+        <td class="lbl">Subject</td><td id="pdf_subject" class="val"></td>
+      </tr>
+    </table>
+
+    <!-- Footer -->
+    <div style="margin-top:20px; border-top:1px solid #ccc; padding-top:8px; text-align:center; font-size:11px; color:#777;">
+      This is a computer-generated document. No signature required. | Vivek University — Department of Nursing Education
+    </div>
+
+  </div>
+</div>
+
+<script src="script1.js"></script>
+
+<!-- PAYMENT POPUP -->
+<div id="paymentPopup" style="
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background:rgba(0,0,0,0.6);
+    z-index:9999;
+    justify-content:center;
+    align-items:center;">
+
+    <div style="
+        background:#fff;
+        border-radius:12px;
+        padding:40px;
+        width:380px;
+        text-align:center;
+        box-shadow:0 10px 40px rgba(0,0,0,0.3);
+        position:relative;">
+
+        <!-- Close Button -->
+        <span onclick="closePaymentPopup()" style="
+            position:absolute;
+            top:12px; right:18px;
+            font-size:22px;
+            cursor:pointer;
+            color:#888;">✕</span>
+
+        <!-- University Logo -->
+        <img src="logo1.png" style="width:250px; height:auto; margin-bottom:10px;">
+
+        <!-- Title -->
+        <h3 style="color:#2c3e7a; margin:0 0 4px;">Vivek University</h3>
+        <p style="color:#555; font-size:13px; margin:0 0 20px;">Department of Nursing Education</p>
+
+        <hr style="border:1px solid #eee; margin-bottom:20px;">
+
+        <!-- Application Info -->
+        <p style="font-size:13px; color:#444; margin-bottom:6px;">
+            Application No: <strong id="popupAppId"></strong>
+        </p>
+        <p style="font-size:13px; color:#444; margin-bottom:20px;">
+            Applicant: <strong id="popupName"></strong>
+        </p>
+
+        <!-- Fee Box -->
+        <div style="
+            background:#f0f4ff;
+            border:2px solid #2c3e7a;
+            border-radius:8px;
+            padding:16px;
+            margin-bottom:24px;">
+            <p style="color:#555; font-size:13px; margin:0 0 6px;">Application Fee</p>
+            <h2 style="color:#2c3e7a; margin:0; font-size:32px;">₹1,000</h2>
+            <p style="color:#888; font-size:11px; margin:6px 0 0;">GNM Nursing Programme 2024</p>
+        </div>
+
+        <!-- Pay Button -->
+        <button onclick="startPayment()" style="
+            width:100%;
+            padding:14px;
+            background:#2c3e7a;
+            color:white;
+            border:none;
+            border-radius:8px;
+            font-size:16px;
+            font-weight:bold;
+            cursor:pointer;
+            transition:background 0.2s;
+            user-select:none;"> 
+            💳 Pay ₹1,000 Now
+        </button>
+
+        <p style="color:#aaa; font-size:11px; margin-top:14px;">
+            Secured by Razorpay 🔒
+        </p>
+
+    </div>
+</div>
+</body>
+</html>
