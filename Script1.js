@@ -230,7 +230,7 @@ function closePaymentPopup() {
 function startPayment() {
     var options = {
         key:         "rzp_live_871H2Jybngmseo",
-        amount:      100000, // in paise = ₹1000
+        amount:      100, // in paise = ₹1000
         currency:    "INR",
         name:        "Vivek University",
         description: "B.Sc Nursing Application Fee",
