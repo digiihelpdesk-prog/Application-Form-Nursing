@@ -1,7 +1,7 @@
 // ══════════════════════════════════════════
 // CONFIG — update this to your backend URL
 // ══════════════════════════════════════════
-var BACKEND_URL = "http://localhost:5000"; // e.g. https://yourserver.com
+var BACKEND_URL = "http://localhost:5000/api/candidates/submit"; // e.g. https://yourserver.com
 
 // ══════════════════════════════════════════
 // AGE AUTO CALCULATOR
