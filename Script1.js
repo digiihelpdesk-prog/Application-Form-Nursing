@@ -1,7 +1,7 @@
 // ══════════════════════════════════════════
 // CONFIG — update this to your backend URL
 // ══════════════════════════════════════════
-var BACKEND_URL = "https://nursing-backend-o5rq.onrender.com"; // e.g. https://yourserver.com
+var BACKEND_URL = "https://application-form-nursing-production.up.railway.app"; // e.g. https://yourserver.com
 
 // ══════════════════════════════════════════
 // AGE AUTO CALCULATOR
