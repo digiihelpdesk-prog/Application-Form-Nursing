@@ -239,6 +239,14 @@ gap:10px;
 .form-group select{
 padding:7px 8px;
 font-size:11px;
+width:100%;
+box-sizing:border-box;
+}
+
+.form-group input[type="file"]{
+width:100%;
+font-size:10px;
+padding:4px;
 }
 
 .form-group label{
@@ -256,5 +264,10 @@ width:100%;
 .section-title{
 font-size:12px;
 padding:10px 12px;
+}
+
+.university-logo{
+width:100px !important;
+height:55px !important;
 }
 }
