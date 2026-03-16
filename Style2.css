@@ -283,3 +283,109 @@ h2{
 font-size:16px;
 }
 }
+
+/* ───────── PRINT STYLES (2 Page) ───────── */
+@media print {
+
+  /* Hide everything not needed */
+  button,
+  .submit-btn,
+  .print-btn,
+  .upload-note,
+  .photo-preview-wrap,
+  .sign-preview-wrap,
+  #paymentPopup,
+  #pdfDownloadTemplate,
+  input[type="file"] {
+    display: none !important;
+  }
+
+  /* Page size and margins */
+  @page {
+    size: A4 portrait;
+    margin: 6mm;
+  }
+
+  body {
+    padding: 0 !important;
+    background: white !important;
+    font-size: 9px !important;
+  }
+
+  .container {
+    padding: 8px !important;
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+  }
+
+  /* Header compact */
+  .form-header {
+    margin-bottom: 4px !important;
+  }
+
+  .university-logo {
+    width: 120px !important;
+    height: 55px !important;
+  }
+
+  .university-info h1 {
+    font-size: 13px !important;
+  }
+
+  h1, h2 {
+    font-size: 11px !important;
+    margin: 2px 0 !important;
+  }
+
+  hr {
+    margin: 4px 0 !important;
+  }
+
+  /* Section title compact */
+  .section-title {
+    font-size: 9px !important;
+    padding: 4px 10px !important;
+    margin: 6px 0 6px !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+  }
+
+  /* Grid 3 columns, tight gap */
+  .grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 5px !important;
+  }
+
+  .form-group {
+    gap: 2px !important;
+  }
+
+  .form-group label {
+    font-size: 8px !important;
+    font-weight: 600 !important;
+  }
+
+  .form-group input,
+  .form-group select {
+    font-size: 8px !important;
+    padding: 3px 5px !important;
+    height: 18px !important;
+    border-radius: 3px !important;
+    background: #f9faff !important;
+    box-shadow: none !important;
+  }
+
+  /* Page break before Upload Documents section */
+  .section-title:nth-of-type(6) {
+    page-break-before: always !important;
+  }
+
+  /* Declaration area compact */
+  #declarationBox {
+    padding: 8px !important;
+    font-size: 9px !important;
+    margin-top: 8px !important;
+  }
+
+}

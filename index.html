@@ -328,8 +328,23 @@
 
 </div>
 
-<div style="text-align:center; margin-top:30px;">
-  <button type="submit" class="submit-btn">Submit Application</button>
+<!-- DECLARATION -->
+<div style="background:#f0f4ff;border:1px solid #2c3e7a;border-radius:8px;padding:16px;margin-top:30px;">
+  <p style="color:#2c3e7a;font-weight:bold;font-size:14px;margin:0 0 10px;">📋 Declaration</p>
+  <p style="font-size:13px;color:#333;margin:0 0 12px;line-height:1.6;">
+    I hereby declare that all the information provided by me is true and correct to the best of my knowledge and belief. If any information is found to be incorrect or false, my candidature may be cancelled.”
+  </p>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <input type="checkbox" id="declarationCheck" onchange="toggleSubmit()">
+    <label for="declarationCheck" style="font-size:13px;color:#2c3e7a;font-weight:600;cursor:pointer;">
+      ✅ I agree to the above declaration and confirm all details are correct.
+    </label>
+  </div>
+</div>
+
+<div style="text-align:center; margin-top:20px;">
+  <button type="submit" id="submitBtn" class="submit-btn" disabled style="opacity:0.5;cursor:not-allowed;">Submit Application</button>
+  <p id="declWarning" style="color:red;font-size:12px;margin-top:6px;display:none;">⚠ Please tick the declaration checkbox to proceed.</p>
 </div>
 
 </form>
